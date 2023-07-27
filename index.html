@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/nullStyle.css">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Lesson </title>
+</head>
+<body>
+    <div class="container-fluid min-vh-100">
+        <div class="row min-vh-100">
+            <nav class="col-2 p-0 bg-secondary ps-4 py-4 min-h-100">
+                <div class="container-fluid">
+                    <p class="fw-bold">CRUD OPERATIONS</p>
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 btn-group-vertical gap-3" role="group" aria-label="Basic outlined">
+                        <li class="nav-item row col-11">
+                           <button class="btn btn-outline-primary text-dark text-start d-flex align-items-center"><span class="nav-link-icon me-3"><img src="./img/icon/home-icon.svg" alt=""></span> Home</button>
+                        </li>
+                        <li class="nav-item row col-11">
+                            <button class="btn btn-outline-primary text-dark text-start d-flex align-items-center" data-blockID ="#home"><span class="nav-link-icon me-3"><img class="d-inline" src="./img/icon/students-icon.svg" alt=""></span>Students</button>
+                        </li>
+                        <li class="nav-item row col-11">
+                            <button class="btn btn-outline-primary text-dark text-start d-flex align-items-center"><span class="nav-link-icon me-3"><img class="d-inline" src="./img/icon/settings-icon.svg" alt=""></span>Settings</button>
+                        </ul>
+                </div>
+            </nav>
+            <section class="main col-10 px-4 py-5" id="main">
+                <section id="home" class="container-fluid overflow-hidden d-none">
+                    <div class="row d-flex justify-content-between">
+                        <div  class="statisticCard bg-card1 col-3 pt-3 px-4" data-cardName="students">
+                            <div class="row text-start">
+                                <div class="statisticCard_icon col-2 text-start p-0"><img src="./img/icon/students-icon_card.svg" alt="Total students in the school"></div>
+                            </div>
+                            <p class="row statisticCard_name">Students</p>
+                            <p class="statisticCard_data text-end m-0 fs-2 fw-bold">243</p>
+                        </div>
+                        <div  class="statisticCard bg-card2 col-3 pt-3 px-4" data-cardName="income">
+                            <div class="row text-start">
+                                <div class="statisticCard_icon col-2 text-start p-0"><img src="./img/icon/income-icon_card.svg" alt="Total students in the school"></div>
+                            </div>
+                            <p class="row statisticCard_name">Total income</p>
+                            <p class="statisticCard_data text-end fs-2 fw-bold">$</p>
+                        </div>
+                        <div  class="statisticCard bg-card3 col-3 pt-3 px-4" data-cardName="debt">
+                            <div class="row text-start">
+                                <div class="statisticCard_icon col-2 text-start p-0"><img src="./img/icon/debt-icon_card.svg" alt="Total students in the school"></div>
+                            </div>
+                            <p class="row statisticCard_name">Total debt</p>
+                            <p class="statisticCard_data text-end fs-2 fw-bold">$</p>
+                        </div>
+                    </div>
+                </section>
+                <section id="students" class="ontainer-fluid overflow-hidden d-none"></section>
+            </section>
+        </div>
+    </div>
+    
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

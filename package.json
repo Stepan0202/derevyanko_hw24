@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "bootstrap": "^5.3.1",
+    "moment": "^2.29.4",
+    "sass": "^1.64.1"
+  },
+  "name": "derevyanko_hw24",
+  "version": "1.0.0",
+  "description": "My homework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "sass": "sass --watch scss:css"
+  },
+  "author": "",
+  "license": "ISC"
+}

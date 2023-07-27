@@ -1,0 +1,31 @@
+$white: #FDFDFD;
+
+$theme-colors: (
+    "light":      #d0eafd,
+    "dark":       #02040f,
+    "primary":    #FEAF00,
+    "secondary":  #F2EAE1,
+    "info":       #87b2d9,
+    "accent1":    #e5346a,
+    "accent2":    #996397,
+    "accent3":    #9dc0e6,
+    "success":    #25ac64,
+    "warning":    #e6cd24,
+    "danger":     #f61712,
+    "card1": #F0F9FF,
+    "card2": #FEF6FB,
+    "card3": #FEFBEC
+);
+$container-max-widths: (
+  sm: 540px,
+  md: 720px,
+  lg: 960px,
+  xl: 1170px,
+  xxl: 1440px
+);
+
+$btn-border-width:   0;
+$btn-border-radius: 4px;
+$btn-border-radius-sm: 4px;
+$btn-border-radius-lg: 4px;
+$btn-link-color: #000;
