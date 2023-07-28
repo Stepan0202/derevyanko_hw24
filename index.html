@@ -16,13 +16,13 @@
                     <p class="fw-bold">CRUD OPERATIONS</p>
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 btn-group-vertical gap-3" role="group" aria-label="Basic outlined">
                         <li class="nav-item row col-11">
-                           <button class="btn btn-outline-primary text-dark text-start d-flex align-items-center"><span class="nav-link-icon me-3"><img src="./img/icon/home-icon.svg" alt=""></span> Home</button>
+                           <button data-toggle="#home" class="btn btn-outline-primary text-dark text-start d-flex align-items-center"><span class="nav-link-icon me-3"><img src="./img/icon/home-icon.svg" alt=""></span> Home</button>
                         </li>
                         <li class="nav-item row col-11">
-                            <button class="btn btn-outline-primary text-dark text-start d-flex align-items-center" data-blockID ="#home"><span class="nav-link-icon me-3"><img class="d-inline" src="./img/icon/students-icon.svg" alt=""></span>Students</button>
+                            <button  data-toggle="#students" class="btn btn-outline-primary text-dark text-start d-flex align-items-center" data-blockID ="#home"><span class="nav-link-icon me-3"><img class="d-inline" src="./img/icon/students-icon.svg" alt=""></span>Students</button>
                         </li>
                         <li class="nav-item row col-11">
-                            <button class="btn btn-outline-primary text-dark text-start d-flex align-items-center"><span class="nav-link-icon me-3"><img class="d-inline" src="./img/icon/settings-icon.svg" alt=""></span>Settings</button>
+                            <button  data-toggle="#settings" class="btn btn-outline-primary text-dark text-start d-flex align-items-center"><span class="nav-link-icon me-3"><img class="d-inline" src="./img/icon/settings-icon.svg" alt=""></span>Settings</button>
                         </ul>
                 </div>
             </nav>
@@ -52,7 +52,21 @@
                         </div>
                     </div>
                 </section>
-                <section id="students" class="ontainer-fluid overflow-hidden d-none"></section>
+                <section id="students" class="container-fluid overflow-hidden d-none">
+                    <table class="table table-primary table-striped">
+                        <thead >
+                            <tr>
+                                <th data-key="id">Student ID</th>
+                                <th data-key="name">Name</th>
+                                <th data-key="secondName">Second name</th>
+                                <th data-key="course">Course</th>
+                                <th data-key="pay">Pay</th>
+                                <th data-key="debt">Debt</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </section>
+                <section id="settings">This page on develop phase</section>
             </section>
         </div>
     </div>
