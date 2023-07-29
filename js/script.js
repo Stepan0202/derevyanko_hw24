@@ -4,41 +4,64 @@ TODO:
 1. Saving to the localStorage
 */
 class Student {
-    constructor(id, photo, name, secondName, age, avGrade, tel, mail, course, pay){
+    constructor(id, name, secondName, age, avGrade, course, pay){
         this.id = id,
-        this.photo = photo,
+        this.photo = `https://picsum.photos/id/${this.id}/200`,
         this.name = name,
         this.secondName = secondName,
         this.age = age,
         this.avGrade = avGrade,
-        this.tel = tel,
-        this.mail = mail,
+        this.tel = `+38(063)${this.id}${this.id*2}${this.id+3}2356`,
+        this.mail = `${this.name}_${this.secondName}@college.ua`,
         this.course = course,
         this.pay = pay,
-        this.debt = this.course.price - this.pay
+        this.debt = this.course.price - this.pay,
+        this.card = this.makeStudentCard();
+    }
+    makeStudentCard(){
+        const card = `
+        <div class="card" style="width: 18rem;">
+            <img src="${this.photo}" class="card-img-top" alt="Student avatar">
+            <div class="card-body">
+                <h5 class="card-title">${this.name} ${this.secondName}</h5>
+                    <div class="container">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">ID: ${this.id}</li>
+                            <li class="list-group-item">Age: ${this.age}</li>
+                            <li class="list-group-item">Average grade: ${this.avGrade}</li>
+                            <li class="list-group-item">Phone: ${this.tel}</li>
+                            <li class="list-group-item">Mail: ${this.mail}</li>
+                            <li class="list-group-item">Course: ${this.course.name}</li>
+                            <li class="list-group-item">Pay: ${this.pay}</li>
+                            <li class="list-group-item">Debt: ${this.debt}</li>
+                        </ul>
+                    </div>
+            </div>
+        </div>`;
+        return card;
     }
 };
 let students = [
-    new Student(1, 'https://picsum.photos/200','John','Smith', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Marketing', price: 300 },237),
-    new Student(2, 'https://picsum.photos/200','Alice','Johnson', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Programming', price: 400 }, 280),
-    new Student(3, 'https://picsum.photos/200','Bob','Brown', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Design', price: 350 }, 250),
-    new Student(4, 'https://picsum.photos/200','Eva','Davis', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Marketing', price: 300 }, 150),
-    new Student(5, 'https://picsum.photos/200','Frank','Lee', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Programming', price: 400 }, 300),
-    new Student(6, 'https://picsum.photos/200','Grace','Garcia', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Design', price: 350 }, 200),
-    new Student(7, 'https://picsum.photos/200','Hannah','Hall', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Marketing', price: 300 }, 250),
-    new Student(8, 'https://picsum.photos/200','Ivy','Clark', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Programming', price: 400 }, 300),
-    new Student(9, 'https://picsum.photos/200','Jack','Lopez', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Design', price: 350 }, 100),
-    new Student(10, 'https://picsum.photos/200','Oliver','Green', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Marketing', price: 300 }, 200),
-    new Student(11, 'https://picsum.photos/200','Sophia','Evans', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Programming', price: 400 }, 380 ),
-    new Student(12, 'https://picsum.photos/200','Emma','Martinez', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Design', price: 350 }, 300 ),
-    new Student(13, 'https://picsum.photos/200','Michael','Morales', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Marketing', price: 300 }, 250 ),
-    new Student(14, 'https://picsum.photos/200','Lucas','Allen', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Programming', price: 400 }, 380 ),
-    new Student(15, 'https://picsum.photos/200','Isabella','Wright', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Design', price: 350 }, 320 ),
-    new Student(16, 'https://picsum.photos/200','Ava','White', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Marketing', price: 300 }, 290 ),
-    new Student(17, 'https://picsum.photos/200','Mia','King', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Programming', price: 400 }, 370 ),
-    new Student(18, 'https://picsum.photos/200','Noah','Baker', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Design', price: 350 }, 310 ),
-    new Student(19, 'https://picsum.photos/200','Liam','Parker', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Marketing', price: 300 }, 280 ),
-    new Student(20, 'https://picsum.photos/200','Sophia','Young', 20, 97.6, '+380661236549', 'studentMail@mail.com',{ name: 'Programming', price: 400 }, 380 ),
+    new Student(1, 'John','Smith', 20, 97.6,{ name: 'Marketing', price: 300 },237),
+    new Student(2, 'Alice','Johnson', 20, 97.6,{ name: 'Programming', price: 400 }, 280),
+    new Student(3, 'Bob','Brown', 20, 97.6,{ name: 'Design', price: 350 }, 250),
+    new Student(4, 'Eva','Davis', 20, 97.6,{ name: 'Marketing', price: 300 }, 150),
+    new Student(5, 'Frank','Lee', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
+    new Student(6, 'Grace','Garcia', 20, 97.6,{ name: 'Design', price: 350 }, 200),
+    new Student(7, 'Hannah','Hall', 20, 97.6,{ name: 'Marketing', price: 300 }, 250),
+    new Student(8, 'Ivy','Clark', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
+    new Student(9, 'Jack','Lopez', 20, 97.6,{ name: 'Design', price: 350 }, 100),
+    new Student(10,'Oliver','Green', 20, 97.6,{ name: 'Marketing', price: 300 }, 200),
+    new Student(11,'Sophia','Evans', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+    new Student(12,'Emma','Martinez', 20, 97.6,{ name: 'Design', price: 350 }, 300 ),
+    new Student(13,'Michael','Morales', 20, 97.6,{ name: 'Marketing', price: 300 }, 250 ),
+    new Student(14,'Lucas','Allen', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+    new Student(15,'Isabella','Wright', 20, 97.6,{ name: 'Design', price: 350 }, 320 ),
+    new Student(16,'Ava','White', 20, 97.6,{ name: 'Marketing', price: 300 }, 290 ),
+    new Student(17,'Mia','King', 20, 97.6,{ name: 'Programming', price: 400 }, 370 ),
+    new Student(18,'Noah','Baker', 20, 97.6,{ name: 'Design', price: 350 }, 310 ),
+    new Student(19,'Liam','Parker', 20, 97.6,{ name: 'Marketing', price: 300 }, 280 ),
+    new Student(20,'Sophia','Young', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
 ];
 const pages = {
     main: document.querySelector('#main'),
@@ -62,8 +85,9 @@ const controls = [
     }
 ]
 const studentsTable = document.querySelector('#students table');
-studentsTable.addEventListener('click')
-
+const main = document.querySelector('#main');
+const details = document.querySelector('#details');
+studentsTable.addEventListener('click', enableControl);
 
 function toggleMainContainer(classOrID){
     const childrens = pages.main.children;
@@ -116,7 +140,7 @@ function updateTable(){
                     cell.style.display = "inline-block";
                     containerCell.appendChild(cell);
 
-                    setAttributes(img, ['src', 'alt', 'title'], [controlEl.icon, controlEl.description, controlEl.name]);
+                    setAttributes(img, ['src', 'alt', 'title', 'data-button-type', 'data-button-id'], [controlEl.icon, controlEl.description, controlEl.name, controlEl.name, student.id]);
                     
                 })
             }
@@ -125,8 +149,62 @@ function updateTable(){
     })
     
 }
-function makeStudentCard(){
 
+function enableControl(e){
+    const button = e.target;
+    const buttonType = button.dataset.buttonType;
+    const id = button.dataset.buttonId;
+    console.log('enableControl')
+        switch(buttonType){
+            case 'view':
+                viewMoreInfo(id);
+                break;
+            case 'edit':
+                editRow(id);
+                break;
+            case 'delete':
+                console.log('delete');
+                break;
+        }
+    
+}
+function editRow(rowID){
+    const row = getRowByID(rowID);
+    console.log(editRow);
+}
+
+function deleteRow(){
+
+}
+
+function viewMoreInfo(id){
+    details.innerHTML = '';
+    details.style.display = 'block';
+    main.classList.remove('col-10');
+    main.classList.add('col-7');
+    const student = students.filter(student => {return student.id == id})[0];
+    console.log('viewevent')
+    let tempDiv = document.createElement('div');
+    tempDiv.innerHTML = student.card;
+    const card = tempDiv.firstElementChild;
+    const close = document.createElement('button');
+    close.classList.add('btn-close', 'mb-3', 'bg-primary');
+    close.addEventListener('click', () => {
+        details.style.display = 'none';
+        main.classList.add('col-10');
+        main.classList.remove('col-7');
+    })
+    details.style.left = "0px";
+    details.appendChild(close);
+    details.appendChild(card);
+    
+
+}
+function getRowByID(id){
+    const cells = document.querySelectorAll('[data-key="id"]');
+    let cell;
+    cells.forEach(el => {if(el.innerHTML == id) cell = el})
+    console.log(cell.parentNode);
 }
 function setAttributes(element, attributes, values){
     attributes.forEach((attr, index) => {

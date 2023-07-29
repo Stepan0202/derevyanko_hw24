@@ -1,2 +1,9 @@
 @import "assets/variables";
 @import "../node_modules/bootstrap/scss/bootstrap.scss";
+.details, .main{
+    transition: all 0.5s ease-in 0s;
+}
+.details{
+    position: relative;
+    left: 1000px;
+}
