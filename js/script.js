@@ -2,6 +2,8 @@
 /*
 TODO:
 1. Saving to the localStorage
+2. Courses array
+3. editing course field in student card — dropdown menu
 */
 class Student {
     constructor(id, name, secondName, age, avGrade, course, pay){
@@ -27,17 +29,18 @@ class Student {
                     <div class="container">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item">ID: ${this.id}</li>
-                            <li class="list-group-item">Age: ${this.age}</li>
-                            <li class="list-group-item">Average grade: ${this.avGrade}</li>
-                            <li class="list-group-item">Phone: ${this.tel}</li>
-                            <li class="list-group-item">Mail: ${this.mail}</li>
-                            <li class="list-group-item">Course: ${this.course.name}</li>
-                            <li class="list-group-item">Pay: ${this.pay}</li>
-                            <li class="list-group-item">Debt: ${this.debt}</li>
+                            <li class="list-group-item">Age: <span data-edit="age">${this.age}</span></li>
+                            <li class="list-group-item">Average grade: <span data-edit="avGrade">${this.avGrade}</span></li>
+                            <li class="list-group-item">Phone: <span data-edit="tel">${this.tel}</span></li>
+                            <li class="list-group-item">Mail: <span data-edit="mail">${this.mail}</span></li>
+                            <li class="list-group-item">Course: <span data-edit="course">${this.course.name}</span></li>
+                            <li class="list-group-item">Pay: <span data-edit="pay">${this.pay}</span></li>
+                            <li class="list-group-item">Debt: <span data-edit="debt">${this.debt}</span></li>
                         </ul>
                     </div>
             </div>
-        </div>`;
+        </div>
+        `;
         return card;
     }
 };
@@ -169,8 +172,48 @@ function enableControl(e){
     
 }
 function editRow(rowID){
-    const row = getRowByID(rowID);
-    console.log(editRow);
+    const card = viewMoreInfo(rowID);
+    const cardFields = card.querySelectorAll('[data-edit]');
+    const cardFieldsCopy = [];
+    //creating and adding buttons
+    const buttonContainer = document.createElement('div');
+    const saveButton = document.createElement('button');
+    const cancelButton = document.createElement('button');
+    const student = students.filter(student => {return student.id == rowID})[0];
+
+    buttonContainer.classList.add('d-grid', 'gap-2', 'd-md-block', 'mx-auto');
+    buttonContainer.appendChild(saveButton);
+    buttonContainer.appendChild(cancelButton);
+
+    saveButton.classList.add('btn', 'btn-primary');
+    saveButton.innerHTML = "SAVE";
+
+    cancelButton.classList.add('btn', 'btn-secondary');
+    cancelButton.innerHTML = "CANCEL";
+
+    card.appendChild(buttonContainer);
+
+    //adding functions to buttons
+    saveButton.addEventListener('click', () => {
+        cardFields.forEach(field => {
+            student[field.dataset.edit] = field.innerHTML;
+        });
+        updateTable();
+    });
+    cancelButton.addEventListener('click', () => {
+        cardFields.forEach((field, index) => field.innerHTML = cardFieldsCopy[index].innerHTML);
+    });
+    
+    //making fields editable;
+    cardFields.forEach(field => {
+        cardFieldsCopy.push(field.cloneNode(true));
+        field.contentEditable = "true";
+        field.classList.add('border', 'border-success', 'rounded');
+        
+    })
+
+
+    
 }
 
 function deleteRow(){
@@ -197,8 +240,7 @@ function viewMoreInfo(id){
     details.style.left = "0px";
     details.appendChild(close);
     details.appendChild(card);
-    
-
+    return card;
 }
 function getRowByID(id){
     const cells = document.querySelectorAll('[data-key="id"]');
