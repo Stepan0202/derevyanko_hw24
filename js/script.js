@@ -1,9 +1,25 @@
 'use strict'
 /*
-TODO:
-1. Saving to the localStorage
-2. Courses array
-3. editing course field in student card — dropdown menu
+TODO FROM HOMEWORK:
+    Створити CRUD-додаток (Create, Read, Update, Delete):
+
+    Виводиться список користувачів із кнопками “Edit”, “Remove”, “View” біля кожного користувача (use data-id attributes або event delegation)
+    список користувачів отримувати з js-файлу (масив об'єктів / використовувати функції-конструктори – за бажанням)
+
+    При натисканні на кнопку “View” відкриваються дані користувача у блоці під списком
+    При натисканні на кнопку “Edit” з'являється можливість редагувати дані в блоці під списком. Дані зберігаються при натисканні на кнопку “Save” та оновлюють дані у списку
+
+    При натисканні на кнопку “Remove” користувач видаляється зі списку
+    Обов'язково підтвердження видалення (для уникнення видалення помилково)
+    Реалізувати можливість додавання нових користувачів
+    Бажано перевикористовувати форму редагування
+    При додаванні користувач з'являється у списку
+    Після перезавантаження сторінки всі зміни повинні зберігатись (використовувати localStorage)
+
+MY OWN TODO:
+    2. Courses array
+    3. editing course field in student card — dropdown menu
+    4. Automatically recounting of debt
 */
 class Student {
     constructor(id, name, secondName, age, avGrade, course, pay){
@@ -90,7 +106,12 @@ const controls = [
 const studentsTable = document.querySelector('#students table');
 const main = document.querySelector('#main');
 const details = document.querySelector('#details');
+const navigation = document.querySelector('#navigation');
+const addStudentBtn = document.querySelector('#addStudentBtn');
+
 studentsTable.addEventListener('click', enableControl);
+navigation.addEventListener('click', e => toggleMainContainer(e.target.dataset.toggle));
+addStudentBtn.addEventListener('click', addStudent);
 
 function toggleMainContainer(classOrID){
     const childrens = pages.main.children;
@@ -105,6 +126,7 @@ function toggleMainContainer(classOrID){
     }
 
 }
+
 function updateTable(){
     const table = pages.students.querySelector('table');
     let tBody = table.querySelector('tbody');
@@ -157,21 +179,20 @@ function enableControl(e){
     const button = e.target;
     const buttonType = button.dataset.buttonType;
     const id = button.dataset.buttonId;
-    console.log('enableControl')
         switch(buttonType){
             case 'view':
                 viewMoreInfo(id);
                 break;
             case 'edit':
-                editRow(id);
+                editStudent(id);
                 break;
             case 'delete':
-                console.log('delete');
+                deleteStudent(id);
                 break;
         }
     
 }
-function editRow(rowID){
+function editStudent(rowID){
     const card = viewMoreInfo(rowID);
     const cardFields = card.querySelectorAll('[data-edit]');
     const cardFieldsCopy = [];
@@ -181,11 +202,11 @@ function editRow(rowID){
     const cancelButton = document.createElement('button');
     const student = students.filter(student => {return student.id == rowID})[0];
 
-    buttonContainer.classList.add('d-grid', 'gap-2', 'd-md-block', 'mx-auto');
+    buttonContainer.classList.add('d-grid', 'gap-2', 'd-md-block', 'mx-auto', 'mb-3');
     buttonContainer.appendChild(saveButton);
     buttonContainer.appendChild(cancelButton);
 
-    saveButton.classList.add('btn', 'btn-primary');
+    saveButton.classList.add('btn', 'btn-primary', 'text-white');
     saveButton.innerHTML = "SAVE";
 
     cancelButton.classList.add('btn', 'btn-secondary');
@@ -208,16 +229,24 @@ function editRow(rowID){
     cardFields.forEach(field => {
         cardFieldsCopy.push(field.cloneNode(true));
         field.contentEditable = "true";
-        field.classList.add('border', 'border-success', 'rounded');
+        field.classList.add('border', 'border-success', 'rounded', 'p-1', 'd-block');
         
     })
 
 
     
 }
-
-function deleteRow(){
-
+function addStudent(){
+     console.log("Adding student");
+     toggleMainContainer("#addStudent");
+     
+}
+function deleteStudent(id){
+    const confirmed = confirm("Are you sure you want to delete student from the base?");
+    if(confirmed){
+        students = students.filter(student => student.id != id);
+        updateTable();
+    }
 }
 
 function viewMoreInfo(id){
@@ -226,7 +255,6 @@ function viewMoreInfo(id){
     main.classList.remove('col-10');
     main.classList.add('col-7');
     const student = students.filter(student => {return student.id == id})[0];
-    console.log('viewevent')
     let tempDiv = document.createElement('div');
     tempDiv.innerHTML = student.card;
     const card = tempDiv.firstElementChild;
@@ -253,5 +281,7 @@ function setAttributes(element, attributes, values){
         element.setAttribute(attr, values[index]);
     })
 }
+
 updateTable();
-toggleMainContainer("#students")
+toggleMainContainer("#addStudent");
+
