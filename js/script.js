@@ -21,6 +21,14 @@ MY OWN TODO:
     3. editing course field in student card — dropdown menu
     4. Automatically recounting of debt
 */
+window.onload = () => {
+    updateTable();
+    toggleMainContainer("#home");
+    console.log(localStorage);
+    
+}
+
+let maxStudentID = 0;
 class Student {
     constructor(id, name, secondName, age, avGrade, course, pay){
         this.id = id,
@@ -33,11 +41,13 @@ class Student {
         this.mail = `${this.name}_${this.secondName}@college.ua`,
         this.course = course,
         this.pay = pay,
-        this.debt = this.course.price - this.pay,
+        this.debt = this.countDebt(),
         this.card = this.makeStudentCard();
+
+        if (this.id > maxStudentID) maxStudentID = this.id;
     }
     makeStudentCard(){
-        const card = `
+        this.card = `
         <div class="card" style="width: 18rem;">
             <img src="${this.photo}" class="card-img-top" alt="Student avatar">
             <div class="card-body">
@@ -57,31 +67,20 @@ class Student {
             </div>
         </div>
         `;
-        return card;
+        return this.card;
+    }
+    countDebt(){
+        this.debt = this.course.price - this.pay;
+        return this.debt;
     }
 };
-let students = [
-    new Student(1, 'John','Smith', 20, 97.6,{ name: 'Marketing', price: 300 },237),
-    new Student(2, 'Alice','Johnson', 20, 97.6,{ name: 'Programming', price: 400 }, 280),
-    new Student(3, 'Bob','Brown', 20, 97.6,{ name: 'Design', price: 350 }, 250),
-    new Student(4, 'Eva','Davis', 20, 97.6,{ name: 'Marketing', price: 300 }, 150),
-    new Student(5, 'Frank','Lee', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
-    new Student(6, 'Grace','Garcia', 20, 97.6,{ name: 'Design', price: 350 }, 200),
-    new Student(7, 'Hannah','Hall', 20, 97.6,{ name: 'Marketing', price: 300 }, 250),
-    new Student(8, 'Ivy','Clark', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
-    new Student(9, 'Jack','Lopez', 20, 97.6,{ name: 'Design', price: 350 }, 100),
-    new Student(10,'Oliver','Green', 20, 97.6,{ name: 'Marketing', price: 300 }, 200),
-    new Student(11,'Sophia','Evans', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
-    new Student(12,'Emma','Martinez', 20, 97.6,{ name: 'Design', price: 350 }, 300 ),
-    new Student(13,'Michael','Morales', 20, 97.6,{ name: 'Marketing', price: 300 }, 250 ),
-    new Student(14,'Lucas','Allen', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
-    new Student(15,'Isabella','Wright', 20, 97.6,{ name: 'Design', price: 350 }, 320 ),
-    new Student(16,'Ava','White', 20, 97.6,{ name: 'Marketing', price: 300 }, 290 ),
-    new Student(17,'Mia','King', 20, 97.6,{ name: 'Programming', price: 400 }, 370 ),
-    new Student(18,'Noah','Baker', 20, 97.6,{ name: 'Design', price: 350 }, 310 ),
-    new Student(19,'Liam','Parker', 20, 97.6,{ name: 'Marketing', price: 300 }, 280 ),
-    new Student(20,'Sophia','Young', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
-];
+
+let students = getStudentsFromLS();
+const courses = [
+    { name: "Marketing", price: 300 },
+    { name: 'Programming', price: 400 },
+    { name: 'Design', price: 350 }
+]
 const pages = {
     main: document.querySelector('#main'),
     students: document.querySelector('#students'),
@@ -103,6 +102,8 @@ const controls = [
         icon: './img/icon/table-icon_delete.svg',
     }
 ]
+
+
 const studentsTable = document.querySelector('#students table');
 const main = document.querySelector('#main');
 const details = document.querySelector('#details');
@@ -111,7 +112,7 @@ const addStudentBtn = document.querySelector('#addStudentBtn');
 
 studentsTable.addEventListener('click', enableControl);
 navigation.addEventListener('click', e => toggleMainContainer(e.target.dataset.toggle));
-addStudentBtn.addEventListener('click', addStudent);
+addStudentBtn.addEventListener('click', initForm);
 
 function toggleMainContainer(classOrID){
     const childrens = pages.main.children;
@@ -220,6 +221,8 @@ function editStudent(rowID){
             student[field.dataset.edit] = field.innerHTML;
         });
         updateTable();
+        updateLS('students', students);
+
     });
     cancelButton.addEventListener('click', () => {
         cardFields.forEach((field, index) => field.innerHTML = cardFieldsCopy[index].innerHTML);
@@ -230,22 +233,42 @@ function editStudent(rowID){
         cardFieldsCopy.push(field.cloneNode(true));
         field.contentEditable = "true";
         field.classList.add('border', 'border-success', 'rounded', 'p-1', 'd-block');
-        
     })
 
 
     
 }
-function addStudent(){
-     console.log("Adding student");
+function initForm(){
      toggleMainContainer("#addStudent");
-     
+     const studentForm = document.querySelector("#addStudent form")
+     studentForm.addEventListener('submit', addStudent);      
+}
+function addStudent(e){
+    e.preventDefault();
+    const student = new Student(20,'Not set','Not set', 'Not set', 'Not set','Not set', 'Not set' );
+    const form = e.target;
+
+    for(let i = 0; i < form.length; i++){
+        student[form[i].id] = form[i].value
+        if(form[i].id == 'course') student[form[i].id] = courses[form[i].value];
+    }
+    maxStudentID++;
+    student.id =  maxStudentID;
+    student.countDebt();
+    student.makeStudentCard();
+    students.push(student);
+    updateTable();
+    updateLS('students', students);
+    toggleMainContainer('#students');
+    alert("Student added successfully!")
+
 }
 function deleteStudent(id){
     const confirmed = confirm("Are you sure you want to delete student from the base?");
     if(confirmed){
         students = students.filter(student => student.id != id);
         updateTable();
+        updateLS('students', students);
     }
 }
 
@@ -282,6 +305,35 @@ function setAttributes(element, attributes, values){
     })
 }
 
-updateTable();
-toggleMainContainer("#addStudent");
-
+function getStudentsFromLS(){
+    if(localStorage.students){
+        return JSON.parse(localStorage.students)
+    }
+    return [
+        new Student(1, 'John','Smith', 20, 97.6,{ name: 'Marketing', price: 300 },237),
+        new Student(2, 'Alice','Johnson', 20, 97.6,{ name: 'Programming', price: 400 }, 280),
+        new Student(3, 'Bob','Brown', 20, 97.6,{ name: 'Design', price: 350 }, 250),
+        new Student(4, 'Eva','Davis', 20, 97.6,{ name: 'Marketing', price: 300 }, 150),
+        new Student(5, 'Frank','Lee', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
+        new Student(6, 'Grace','Garcia', 20, 97.6,{ name: 'Design', price: 350 }, 200),
+        new Student(7, 'Hannah','Hall', 20, 97.6,{ name: 'Marketing', price: 300 }, 250),
+        new Student(8, 'Ivy','Clark', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
+        new Student(9, 'Jack','Lopez', 20, 97.6,{ name: 'Design', price: 350 }, 100),
+        new Student(10,'Oliver','Green', 20, 97.6,{ name: 'Marketing', price: 300 }, 200),
+        new Student(11,'Sophia','Evans', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+        new Student(12,'Emma','Martinez', 20, 97.6,{ name: 'Design', price: 350 }, 300 ),
+        new Student(13,'Michael','Morales', 20, 97.6,{ name: 'Marketing', price: 300 }, 250 ),
+        new Student(14,'Lucas','Allen', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+        new Student(15,'Isabella','Wright', 20, 97.6,{ name: 'Design', price: 350 }, 320 ),
+        new Student(16,'Ava','White', 20, 97.6,{ name: 'Marketing', price: 300 }, 290 ),
+        new Student(17,'Mia','King', 20, 97.6,{ name: 'Programming', price: 400 }, 370 ),
+        new Student(18,'Noah','Baker', 20, 97.6,{ name: 'Design', price: 350 }, 310 ),
+        new Student(19,'Liam','Parker', 20, 97.6,{ name: 'Marketing', price: 300 }, 280 ),
+        new Student(20,'Sophia','Young', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+    ];
+    
+}
+function updateLS(key, value){
+    const JSONvalue = JSON.stringify(value);
+    localStorage.setItem(key, JSONvalue);
+}
