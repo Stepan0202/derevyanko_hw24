@@ -24,8 +24,7 @@ MY OWN TODO:
 window.onload = () => {
     updateTable();
     toggleMainContainer("#home");
-    console.log(localStorage);
-    
+    updateStats(); 
 }
 
 let maxStudentID = 0;
@@ -109,7 +108,7 @@ const main = document.querySelector('#main');
 const details = document.querySelector('#details');
 const navigation = document.querySelector('#navigation');
 const addStudentBtn = document.querySelector('#addStudentBtn');
-
+const stats = document.querySelector('#stats');
 studentsTable.addEventListener('click', enableControl);
 navigation.addEventListener('click', e => toggleMainContainer(e.target.dataset.toggle));
 addStudentBtn.addEventListener('click', initForm);
@@ -127,7 +126,165 @@ function toggleMainContainer(classOrID){
     }
 
 }
+function enableControl(e){
+    const button = e.target;
+    const buttonType = button.dataset.buttonType;
+    const id = button.dataset.buttonId;
+        switch(buttonType){
+            case 'view':
+                viewMoreInfo(id);
+                break;
+            case 'edit':
+                editStudent(id);
+                break;
+            case 'delete':
+                deleteStudent(id);
+                break;
+        }
+    
+}
+function editStudent(rowID){
+    const card = viewMoreInfo(rowID);
+    const cardFields = card.querySelectorAll('[data-edit]');
+    const cardFieldsCopy = [];
+    //creating and adding buttons
+    const buttonContainer = document.createElement('div');
+    const saveButton = document.createElement('button');
+    const cancelButton = document.createElement('button');
+    const student = students.filter(student => {return student.id == rowID})[0];
 
+    buttonContainer.classList.add('d-grid', 'gap-2', 'd-md-block', 'mx-auto', 'mb-3');
+    buttonContainer.appendChild(saveButton);
+    buttonContainer.appendChild(cancelButton);
+
+    saveButton.classList.add('btn', 'btn-primary', 'text-white');
+    saveButton.innerHTML = "SAVE";
+
+    cancelButton.classList.add('btn', 'btn-secondary');
+    cancelButton.innerHTML = "CANCEL";
+
+    card.appendChild(buttonContainer);
+
+    //adding functions to buttons
+    saveButton.addEventListener('click', () => {
+        cardFields.forEach(field => {
+            student[field.dataset.edit] = field.innerHTML;
+        });
+        let tempSt = new Student(20,'Not set','Not set', 'Not set', 'Not set','Not set', 'Not set' );
+        console.dir(student)
+        tempSt.makeStudentCard.call(student);
+        tempSt.countDebt.call(student);
+        updateTable();
+        updateLS('students', students);
+        updateStats();
+
+    });
+    cancelButton.addEventListener('click', () => {
+        cardFields.forEach((field, index) => field.innerHTML = cardFieldsCopy[index].innerHTML);
+    });
+    
+    //making fields editable;
+    cardFields.forEach(field => {
+        cardFieldsCopy.push(field.cloneNode(true));
+        field.contentEditable = "true";
+        field.classList.add('border', 'border-success', 'rounded', 'p-1', 'd-block');
+    })
+
+
+    
+}
+function initForm(){
+     toggleMainContainer("#addStudent");
+     const studentForm = document.querySelector("#addStudent form")
+     studentForm.addEventListener('submit', addStudent);      
+}
+function addStudent(e){
+    e.preventDefault();
+    const student = new Student(20,'Not set','Not set', 'Not set', 'Not set','Not set', 'Not set' );
+    const form = e.target;
+
+    for(let i = 0; i < form.length; i++){
+        student[form[i].id] = form[i].value
+        if(form[i].id == 'course') student[form[i].id] = courses[form[i].value];
+    }
+    maxStudentID++;
+    student.id =  maxStudentID;
+    student.countDebt();
+    student.makeStudentCard();
+    students.push(student);
+    updateTable();
+    updateLS('students', students);
+    updateStats();
+    toggleMainContainer('#students');
+    alert("Student added successfully!")
+
+}
+function deleteStudent(id){
+    const confirmed = confirm("Are you sure you want to delete student from the base?");
+    if(confirmed){
+        students = students.filter(student => student.id != id);
+        updateTable();
+        updateLS('students', students);
+        updateStats();
+    }
+}
+
+function viewMoreInfo(id){
+    details.innerHTML = '';
+    details.style.display = 'block';
+    main.classList.remove('col-10');
+    main.classList.add('col-7');
+    const student = students.filter(student => {return student.id == id})[0];
+    let tempDiv = document.createElement('div');
+    tempDiv.innerHTML = student.card;
+    const card = tempDiv.firstElementChild;
+    const close = document.createElement('button');
+    close.classList.add('btn-close', 'mb-3', 'bg-primary');
+    close.addEventListener('click', () => {
+        details.style.display = 'none';
+        main.classList.add('col-10');
+        main.classList.remove('col-7');
+    })
+    details.style.left = "0px";
+    details.appendChild(close);
+    details.appendChild(card);
+    return card;
+}
+
+function getStudentsFromLS(){
+    if(localStorage.students){
+        return JSON.parse(localStorage.students)
+    }
+    return [
+        new Student(1, 'John','Smith', 20, 97.6,{ name: 'Marketing', price: 300 },237),
+        new Student(2, 'Alice','Johnson', 20, 97.6,{ name: 'Programming', price: 400 }, 280),
+        new Student(3, 'Bob','Brown', 20, 97.6,{ name: 'Design', price: 350 }, 250),
+        new Student(4, 'Eva','Davis', 20, 97.6,{ name: 'Marketing', price: 300 }, 150),
+        new Student(5, 'Frank','Lee', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
+        new Student(6, 'Grace','Garcia', 20, 97.6,{ name: 'Design', price: 350 }, 200),
+        new Student(7, 'Hannah','Hall', 20, 97.6,{ name: 'Marketing', price: 300 }, 250),
+        new Student(8, 'Ivy','Clark', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
+        new Student(9, 'Jack','Lopez', 20, 97.6,{ name: 'Design', price: 350 }, 100),
+        new Student(10,'Oliver','Green', 20, 97.6,{ name: 'Marketing', price: 300 }, 200),
+        new Student(11,'Sophia','Evans', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+        new Student(12,'Emma','Martinez', 20, 97.6,{ name: 'Design', price: 350 }, 300 ),
+        new Student(13,'Michael','Morales', 20, 97.6,{ name: 'Marketing', price: 300 }, 250 ),
+        new Student(14,'Lucas','Allen', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+        new Student(15,'Isabella','Wright', 20, 97.6,{ name: 'Design', price: 350 }, 320 ),
+        new Student(16,'Ava','White', 20, 97.6,{ name: 'Marketing', price: 300 }, 290 ),
+        new Student(17,'Mia','King', 20, 97.6,{ name: 'Programming', price: 400 }, 370 ),
+        new Student(18,'Noah','Baker', 20, 97.6,{ name: 'Design', price: 350 }, 310 ),
+        new Student(19,'Liam','Parker', 20, 97.6,{ name: 'Marketing', price: 300 }, 280 ),
+        new Student(20,'Sophia','Young', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
+    ];
+    
+}
+
+//updating
+function updateLS(key, value){
+    const JSONvalue = JSON.stringify(value);
+    localStorage.setItem(key, JSONvalue);
+}
 function updateTable(){
     const table = pages.students.querySelector('table');
     let tBody = table.querySelector('tbody');
@@ -175,124 +332,24 @@ function updateTable(){
     })
     
 }
+function updateStats(){
+    const studentsCount = stats.querySelector('[data-cardName="students"] .statisticCard_data');
+    const income = stats.querySelector('[data-cardName="income"] .statisticCard_data');
+    const studentsDebt = stats.querySelector('[data-cardName="debt"] .statisticCard_data');
 
-function enableControl(e){
-    const button = e.target;
-    const buttonType = button.dataset.buttonType;
-    const id = button.dataset.buttonId;
-        switch(buttonType){
-            case 'view':
-                viewMoreInfo(id);
-                break;
-            case 'edit':
-                editStudent(id);
-                break;
-            case 'delete':
-                deleteStudent(id);
-                break;
-        }
+    studentsCount.innerHTML = students.length;
     
-}
-function editStudent(rowID){
-    const card = viewMoreInfo(rowID);
-    const cardFields = card.querySelectorAll('[data-edit]');
-    const cardFieldsCopy = [];
-    //creating and adding buttons
-    const buttonContainer = document.createElement('div');
-    const saveButton = document.createElement('button');
-    const cancelButton = document.createElement('button');
-    const student = students.filter(student => {return student.id == rowID})[0];
-
-    buttonContainer.classList.add('d-grid', 'gap-2', 'd-md-block', 'mx-auto', 'mb-3');
-    buttonContainer.appendChild(saveButton);
-    buttonContainer.appendChild(cancelButton);
-
-    saveButton.classList.add('btn', 'btn-primary', 'text-white');
-    saveButton.innerHTML = "SAVE";
-
-    cancelButton.classList.add('btn', 'btn-secondary');
-    cancelButton.innerHTML = "CANCEL";
-
-    card.appendChild(buttonContainer);
-
-    //adding functions to buttons
-    saveButton.addEventListener('click', () => {
-        cardFields.forEach(field => {
-            student[field.dataset.edit] = field.innerHTML;
-        });
-        updateTable();
-        updateLS('students', students);
-
-    });
-    cancelButton.addEventListener('click', () => {
-        cardFields.forEach((field, index) => field.innerHTML = cardFieldsCopy[index].innerHTML);
-    });
-    
-    //making fields editable;
-    cardFields.forEach(field => {
-        cardFieldsCopy.push(field.cloneNode(true));
-        field.contentEditable = "true";
-        field.classList.add('border', 'border-success', 'rounded', 'p-1', 'd-block');
+    let incomeSum = 0;
+    let debtSum = 0;
+    students.forEach(student => {
+        incomeSum += parseInt(student.pay);
+        debtSum += parseInt(student.debt);
     })
-
-
-    
-}
-function initForm(){
-     toggleMainContainer("#addStudent");
-     const studentForm = document.querySelector("#addStudent form")
-     studentForm.addEventListener('submit', addStudent);      
-}
-function addStudent(e){
-    e.preventDefault();
-    const student = new Student(20,'Not set','Not set', 'Not set', 'Not set','Not set', 'Not set' );
-    const form = e.target;
-
-    for(let i = 0; i < form.length; i++){
-        student[form[i].id] = form[i].value
-        if(form[i].id == 'course') student[form[i].id] = courses[form[i].value];
-    }
-    maxStudentID++;
-    student.id =  maxStudentID;
-    student.countDebt();
-    student.makeStudentCard();
-    students.push(student);
-    updateTable();
-    updateLS('students', students);
-    toggleMainContainer('#students');
-    alert("Student added successfully!")
-
-}
-function deleteStudent(id){
-    const confirmed = confirm("Are you sure you want to delete student from the base?");
-    if(confirmed){
-        students = students.filter(student => student.id != id);
-        updateTable();
-        updateLS('students', students);
-    }
+    income.innerHTML = incomeSum;
+    studentsDebt.innerHTML = debtSum;
 }
 
-function viewMoreInfo(id){
-    details.innerHTML = '';
-    details.style.display = 'block';
-    main.classList.remove('col-10');
-    main.classList.add('col-7');
-    const student = students.filter(student => {return student.id == id})[0];
-    let tempDiv = document.createElement('div');
-    tempDiv.innerHTML = student.card;
-    const card = tempDiv.firstElementChild;
-    const close = document.createElement('button');
-    close.classList.add('btn-close', 'mb-3', 'bg-primary');
-    close.addEventListener('click', () => {
-        details.style.display = 'none';
-        main.classList.add('col-10');
-        main.classList.remove('col-7');
-    })
-    details.style.left = "0px";
-    details.appendChild(close);
-    details.appendChild(card);
-    return card;
-}
+//helpfull
 function getRowByID(id){
     const cells = document.querySelectorAll('[data-key="id"]');
     let cell;
@@ -303,37 +360,4 @@ function setAttributes(element, attributes, values){
     attributes.forEach((attr, index) => {
         element.setAttribute(attr, values[index]);
     })
-}
-
-function getStudentsFromLS(){
-    if(localStorage.students){
-        return JSON.parse(localStorage.students)
-    }
-    return [
-        new Student(1, 'John','Smith', 20, 97.6,{ name: 'Marketing', price: 300 },237),
-        new Student(2, 'Alice','Johnson', 20, 97.6,{ name: 'Programming', price: 400 }, 280),
-        new Student(3, 'Bob','Brown', 20, 97.6,{ name: 'Design', price: 350 }, 250),
-        new Student(4, 'Eva','Davis', 20, 97.6,{ name: 'Marketing', price: 300 }, 150),
-        new Student(5, 'Frank','Lee', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
-        new Student(6, 'Grace','Garcia', 20, 97.6,{ name: 'Design', price: 350 }, 200),
-        new Student(7, 'Hannah','Hall', 20, 97.6,{ name: 'Marketing', price: 300 }, 250),
-        new Student(8, 'Ivy','Clark', 20, 97.6,{ name: 'Programming', price: 400 }, 300),
-        new Student(9, 'Jack','Lopez', 20, 97.6,{ name: 'Design', price: 350 }, 100),
-        new Student(10,'Oliver','Green', 20, 97.6,{ name: 'Marketing', price: 300 }, 200),
-        new Student(11,'Sophia','Evans', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
-        new Student(12,'Emma','Martinez', 20, 97.6,{ name: 'Design', price: 350 }, 300 ),
-        new Student(13,'Michael','Morales', 20, 97.6,{ name: 'Marketing', price: 300 }, 250 ),
-        new Student(14,'Lucas','Allen', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
-        new Student(15,'Isabella','Wright', 20, 97.6,{ name: 'Design', price: 350 }, 320 ),
-        new Student(16,'Ava','White', 20, 97.6,{ name: 'Marketing', price: 300 }, 290 ),
-        new Student(17,'Mia','King', 20, 97.6,{ name: 'Programming', price: 400 }, 370 ),
-        new Student(18,'Noah','Baker', 20, 97.6,{ name: 'Design', price: 350 }, 310 ),
-        new Student(19,'Liam','Parker', 20, 97.6,{ name: 'Marketing', price: 300 }, 280 ),
-        new Student(20,'Sophia','Young', 20, 97.6,{ name: 'Programming', price: 400 }, 380 ),
-    ];
-    
-}
-function updateLS(key, value){
-    const JSONvalue = JSON.stringify(value);
-    localStorage.setItem(key, JSONvalue);
 }
