@@ -60,7 +60,7 @@ class Student {
                             <li class="list-group-item">Mail: <span data-edit="mail">${this.mail}</span></li>
                             <li class="list-group-item">Course: <span data-edit="course">${this.course.name}</span></li>
                             <li class="list-group-item">Pay: <span data-edit="pay">${this.pay}</span></li>
-                            <li class="list-group-item">Debt: <span data-edit="debt">${this.debt}</span></li>
+                            <li class="list-group-item">Debt:${this.debt}</li>
                         </ul>
                     </div>
             </div>
@@ -164,7 +164,12 @@ function editStudent(rowID){
     cancelButton.innerHTML = "CANCEL";
 
     card.appendChild(buttonContainer);
-
+   //making fields editable;
+    cardFields.forEach(field => {
+        cardFieldsCopy.push(field.cloneNode(true));
+        field.contentEditable = "true";
+        field.classList.add('border', 'border-success', 'rounded', 'p-1', 'd-block');
+    })
     //adding functions to buttons
     saveButton.addEventListener('click', () => {
         cardFields.forEach(field => {
@@ -173,7 +178,8 @@ function editStudent(rowID){
         let tempSt = new Student(20,'Not set','Not set', 'Not set', 'Not set','Not set', 'Not set' );
         console.dir(student)
         tempSt.makeStudentCard.call(student);
-        tempSt.countDebt.call(student);
+        // tempSt.countDebt.call(student);
+    
         updateTable();
         updateLS('students', students);
         updateStats();
@@ -183,12 +189,7 @@ function editStudent(rowID){
         cardFields.forEach((field, index) => field.innerHTML = cardFieldsCopy[index].innerHTML);
     });
     
-    //making fields editable;
-    cardFields.forEach(field => {
-        cardFieldsCopy.push(field.cloneNode(true));
-        field.contentEditable = "true";
-        field.classList.add('border', 'border-success', 'rounded', 'p-1', 'd-block');
-    })
+ 
 
 
     
